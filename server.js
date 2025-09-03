@@ -55,8 +55,8 @@ const io = socketIO(server, {
 });
 
 // Initialize Supabase
-const supabaseUrl = 'https://fgizrdpnmojwevrqkdjg.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZnaXpyZHBubW9qd2V2cnFrZGpnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkyNDk5ODUsImV4cCI6MjA1NDgyNTk4NX0.xcvyHjBNZyGP5IGy6g2fN79AHjiK4-0ij1UeNwbpoiY';
+const supabaseUrl = 'https://fgaazwatytlgtnqrawba.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZnYWF6d2F0eXRsZ3RucXJhd2JhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY5MTI0NTAsImV4cCI6MjA3MjQ4ODQ1MH0.-pZPurzMPAwvgTUNZMASMySzhf1YHjMHrTO14G-tGT8';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Configure CORS
