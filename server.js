@@ -44,7 +44,8 @@ const io = socketIO(server, {
     cors: {
         origin: [
             "http://localhost:3000",  // Doctor's frontend
-            "http://localhost:3001",  // Patient's frontend
+            "http://localhost:3001",
+            "http://localhost:3002",  // Patient's frontend
             "https://frontend-diagno.vercel.app",
             "https://doctors-frontend-diango.vercel.app"
         ],
