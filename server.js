@@ -46,8 +46,9 @@ const io = socketIO(server, {
             "http://localhost:3000",  // Doctor's frontend
             "http://localhost:3001",
             "http://localhost:3002",  // Patient's frontend
-            "https://frontend-diagno.vercel.app",
-            "https://doctors-frontend-diango.vercel.app"
+            "https://futureprenure-frontend.vercel.app",
+            "https://futureprenure-doctors-frontend.vercel.app",
+            "https://futureprenure-diagnosis-frontend.vercel.app"
         ],
         methods: ["GET", "POST"],
         credentials: true,
