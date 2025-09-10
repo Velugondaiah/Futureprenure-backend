@@ -68,6 +68,9 @@ app.use(cors({
         'http://localhost:3002', 
         'http://localhost:3000',
         'https://frontend-diagno.vercel.app',
+        'https://futureprenure-frontend.vercel.app',
+        'https://futureprenure-doctors-frontend.vercel.app',
+        'https://futureprenure-diagnosis-frontend.vercel.app',
         'https://doctors-frontend-diango.vercel.app'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -1022,7 +1025,7 @@ async function analyzeTextUsingRapidAPI(text) {
             max_tokens: 1000
         }, {
             headers: {
-                'Authorization': 'Bearer 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',
+                'Authorization': 'Bearer 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',
           'Content-Type': 'application/json',
           
             }
