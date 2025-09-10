@@ -979,9 +979,9 @@ async function extractTextFromImage(imagePath) {
 // Analyze text using GPT-4 API
 async function analyzeTextUsingRapidAPI(text) {
     console.log('Starting GPT analysis');
-    const url = 'https://cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com/v1/chat/completions';
+    const url = 'https://openrouter.ai/api/v1/chat/completions';
     
-    const systemPrompt = `You are a medical expert. Analyze this medical report and provide a clear, structured response. 
+    const systemPrompt = `You are a medical expert. Analyze this medical report and provide a clear, structured response which was completely generalized and can be understanablre for normal people and Strictly Do NOT mention or recommend medications and medicines, even don't mention any medicine name. 
     Always follow this EXACT format with EXACT numbering:
 
     1. Symptoms:
@@ -997,12 +997,14 @@ async function analyzeTextUsingRapidAPI(text) {
     - Explain why this level was chosen
 
     4. Treatment Recommendations:
-    - List specific treatments needed
-    - Include medications if applicable
-    - Provide lifestyle recommendations
+    - Give lifestyle suggestions (diet, rest, exercise, hydration, stress reduction, etc.)
+    - Suggest simple home-care or healthy habits and do not suggest any medicines
+    -Don't mention any medicine name 
+    - Encourage consulting a doctor if needed
+    - Strictly Do NOT mention or recommend medications and medicines, even don't mention any medicine name
 
     5. Recommended Specialist:
-    - Specialist: [EXACTLY ONE OF: Dermatologist/Cardiologist/Neurologist/Orthopedist/Ophthalmologist/ENT/Gastroenterologist/Pulmonologist/Endocrinologist/Oncologist]
+    - Specialist: [EXACTLY ONE OF: Dermatologist/Cardiologist/Neurologist/Orthopedist/Ophthalmologist/ENT/Gastroenterologist/Pulmonologist/Endocrinologist/Oncologist/Infectious]
     - Reason: [Brief explanation why this specialist is needed]
 
     Ensure each section starts with the exact number and heading as shown above.`;
@@ -1010,7 +1012,7 @@ async function analyzeTextUsingRapidAPI(text) {
     try {
         console.log('Sending request to GPT API...');
         const response = await axios.post(url, {
-            model: 'gpt-4-turbo',
+            model: 'deepseek/deepseek-chat-v3.1:free',
             messages: [
                 { role: 'system', content: systemPrompt },
                 { role: 'user', content: text }
@@ -1019,9 +1021,9 @@ async function analyzeTextUsingRapidAPI(text) {
             max_tokens: 1000
         }, {
             headers: {
-                'content-type': 'application/json',
-                'X-RapidAPI-Key': '54bd8d45b5mshbda6cdbbee7fe51p1ad5bfjsn9363f2cba62e',
-                'X-RapidAPI-Host': 'cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com'
+                'Authorization': 'Bearer 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',
+          'Content-Type': 'application/json',
+          
             }
         });
 

@@ -85,7 +85,7 @@ async function extractTextFromImage(imagePath) {
 // Analyze text using GPT-4 API
 async function analyzeTextUsingRapidAPI(text) {
     console.log('Starting GPT analysis');
-    const url = 'https://cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com/v1/chat/completions';
+    const url = 'https://openrouter.ai/api/v1/chat/completions';
     
     const systemPrompt = `You are a medical expert. Analyze this medical report and provide a clear, structured response. 
     Always follow this EXACT format with EXACT numbering:
@@ -116,7 +116,7 @@ async function analyzeTextUsingRapidAPI(text) {
     try {
         console.log('Sending request to GPT API...');
         const response = await axios.post(url, {
-            model: 'gpt-4-turbo',
+            model: 'deepseek/deepseek-chat-v3.1:free',
             messages: [
                 { role: 'system', content: systemPrompt },
                 { role: 'user', content: text }
@@ -125,9 +125,10 @@ async function analyzeTextUsingRapidAPI(text) {
             max_tokens: 1000
         }, {
             headers: {
-                'content-type': 'application/json',
-                'X-RapidAPI-Key': '720627087cmsha09b7303ce1ca5ep1631cbjsn9a61997fdb18',
-                'X-RapidAPI-Host': 'cheapest-gpt-4-turbo-gpt-4-vision-chatgpt-openai-ai-api.p.rapidapi.com'
+                'Authorization': 'Bearer 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',
+          'Content-Type': 'application/json',
+          'HTTP-Referer': YOUR_SITE_URL,
+          'X-Title': YOUR_SITE_NAME
             }
         });
 
