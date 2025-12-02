@@ -1025,7 +1025,7 @@ async function analyzeTextUsingRapidAPI(text) {
             max_tokens: 1000
         }, {
             headers: {
-                'Authorization': 'Bearer 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',
+                'Authorization': 'Bearer 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',
           'Content-Type': 'application/json',
           
             }

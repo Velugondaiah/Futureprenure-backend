@@ -93,6 +93,7 @@ async function analyzeTextUsingRapidAPI(text) {
     1. Symptoms:
     - List all symptoms mentioned
     - Be specific and clear
+    
 
     2. Diagnosis:
     - Provide clear diagnosis
