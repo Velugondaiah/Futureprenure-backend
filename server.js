@@ -49,7 +49,8 @@ const io = socketIO(server, {
             "http://localhost:3002",  // Patient's frontend
             "https://futureprenure-frontend.vercel.app",
             "https://futureprenure-doctors-frontend.vercel.app",
-            "https://futureprenure-diagnosis-frontend.vercel.app"
+            "https://futureprenure-diagnosis-frontend.vercel.app",
+            /https:\/\/futureprenure-frontend.*\.vercel\.app$/
         ],
         methods: ["GET", "POST"],
         credentials: true,
@@ -64,17 +65,28 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Configure CORS
 app.use(cors({
-    origin: [
-        'http://localhost:3001', 
-        'http://localhost:3002', 
-        'http://localhost:3000',
-        'https://frontend-diagno.vercel.app',
-        'https://futureprenure-frontend.vercel.app',
-        'https://futureprenure-doctors-frontend.vercel.app',
-        'https://futureprenure-diagnosis-frontend.vercel.app',
-        'https://doctors-frontend-diango.vercel.app'
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: function (origin, callback) {
+        const allowedOrigins = [
+            'http://localhost:3001', 
+            'http://localhost:3002', 
+            'http://localhost:3000',
+            'https://frontend-diagno.vercel.app',
+            'https://futureprenure-frontend.vercel.app',
+            'https://futureprenure-doctors-frontend.vercel.app',
+            'https://futureprenure-diagnosis-frontend.vercel.app',
+            'https://doctors-frontend-diango.vercel.app'
+        ];
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        // Allow any Vercel preview deployments
+        if (origin.match(/https:\/\/futureprenure-frontend.*\.vercel\.app$/) ||
+            origin.match(/https:\/\/futureprenure.*\.vercel\.app$/) ||
+            allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+        callback(new Error('Not allowed by CORS'));
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
