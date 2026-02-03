@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const { createClient } = require('@supabase/supabase-js');
 const path = require('path');
@@ -980,10 +981,10 @@ async function extractTextFromImage(imagePath) {
     }
 }
 
-// Analyze text using GPT-4 API
+// Analyze text using Groq API (Llama 3.3 70B - best for healthcare applications)
 async function analyzeTextUsingRapidAPI(text) {
-    console.log('Starting GPT analysis');
-    const url = 'https://openrouter.ai/api/v1/chat/completions';
+    console.log('Starting Groq Llama analysis');
+    const url = 'https://api.groq.com/openai/v1/chat/completions';
     
     const systemPrompt = `You are a medical expert. Analyze this medical report and provide a clear, structured response which was completely generalized and can be understanablre for normal people and Strictly Do NOT mention or recommend medications and medicines, even don't mention any medicine name. 
     Always follow this EXACT format with EXACT numbering:
@@ -1014,31 +1015,31 @@ async function analyzeTextUsingRapidAPI(text) {
     Ensure each section starts with the exact number and heading as shown above.`;
     
     try {
-        console.log('Sending request to GPT API...');
+        console.log('Sending request to Groq API...');
         const response = await axios.post(url, {
-            model: 'deepseek/deepseek-chat-v3.1:free',
+            model: 'llama-3.3-70b-versatile',
             messages: [
                 { role: 'system', content: systemPrompt },
                 { role: 'user', content: text }
             ],
             temperature: 0.3,
-            max_tokens: 1000
+            max_tokens: 1024,
+            top_p: 1
         }, {
             headers: {
-                'Authorization': 'Bearer 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',
-          'Content-Type': 'application/json',
-          
+                'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
+                'Content-Type': 'application/json'
             }
         });
 
-        console.log('Received response from GPT API');
+        console.log('Received response from Groq API');
         if (!response.data?.choices?.[0]?.message?.content) {
             throw new Error('Invalid API response structure');
         }
 
         return response.data.choices[0].message.content;
     } catch (error) {
-        console.error('GPT API Error:', error.response?.data || error.message);
+        console.error('Groq API Error:', error.response?.data || error.message);
         throw error;
     }
 }
