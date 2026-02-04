@@ -691,39 +691,42 @@ app.post('/api/appointments', async (req, res) => {
             });
         }
 
-        // Get doctor details for email
-        const { data: doctorData } = await supabase
-            .from('doctors')
-            .select('*')
-            .eq('id', doctor_id)
-            .single();
-
-        // Send email if we have both doctor data and user email
-        if (doctorData && email) {
-            try {
-                await sendAppointmentEmail(
-                    {
-                        patient_name,
-                        date,
-                        time,
-                        mode,
-                        meeting_id,
-                        location
-                    },
-                    doctorData,
-                    email
-                );
-            } catch (emailError) {
-                console.error('Email sending failed:', emailError);
-                // Don't fail the appointment creation if email fails
-            }
-        }
-
+        // Send response immediately - don't wait for email
         res.status(201).json({
             success: true,
             message: 'Appointment booked successfully',
             data: appointmentData
         });
+
+        // Send email asynchronously (fire-and-forget) - don't block the response
+        // Get doctor details for email
+        supabase
+            .from('doctors')
+            .select('*')
+            .eq('id', doctor_id)
+            .single()
+            .then(({ data: doctorData }) => {
+                // Send email if we have both doctor data and user email
+                if (doctorData && email) {
+                    sendAppointmentEmail(
+                        {
+                            patient_name,
+                            date,
+                            time,
+                            mode,
+                            meeting_id,
+                            location
+                        },
+                        doctorData,
+                        email
+                    ).catch(emailError => {
+                        console.error('Email sending failed:', emailError);
+                    });
+                }
+            })
+            .catch(err => {
+                console.error('Error fetching doctor for email:', err);
+            });
 
     } catch (error) {
         console.error('Appointment creation error:', error);
