@@ -1,37 +1,57 @@
 const nodemailer = require('nodemailer');
 
-// Create transporter with Gmail settings
+// Create transporter with Gmail settings - using explicit host/port for better compatibility
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // Use STARTTLS
     auth: {
         user: 'diagnoaiteam1@gmail.com',
-        // Replace this with the new 16-character app password you generated
-        pass: 'qjjj bncw teai hypl'  // Your new app password here
+        pass: 'qjjj bncw teai hypl'
     },
     tls: {
-        rejectUnauthorized: false
+        rejectUnauthorized: false,
+        ciphers: 'SSLv3'
     },
-    // Add connection timeout settings to prevent long delays
-    connectionTimeout: 10000, // 10 seconds
-    greetingTimeout: 10000,   // 10 seconds
-    socketTimeout: 15000      // 15 seconds
+    // Increased timeouts for cloud hosting environments
+    connectionTimeout: 60000, // 60 seconds
+    greetingTimeout: 30000,   // 30 seconds
+    socketTimeout: 60000,     // 60 seconds
+    pool: true,               // Use pooled connections
+    maxConnections: 1,
+    maxMessages: 3,
+    rateDelta: 1000,
+    rateLimit: 3
 });
 
-// Test the connection immediately
-transporter.verify((error, success) => {
-    if (error) {
-        console.error('SMTP connection error:', error);
-    } else {
-        console.log('Server is ready to send emails');
+// Don't verify connection on startup - it can cause issues on cloud platforms
+// Test will happen when first email is sent
+console.log('Email transporter configured');
+
+// Retry function for sending emails
+const sendWithRetry = async (mailOptions, retries = 3) => {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+            const info = await transporter.sendMail(mailOptions);
+            console.log(`Email sent successfully on attempt ${attempt}:`, info.messageId);
+            return info;
+        } catch (error) {
+            console.error(`Email attempt ${attempt} failed:`, error.message);
+            if (attempt === retries) {
+                throw error;
+            }
+            // Wait before retrying (exponential backoff)
+            await new Promise(resolve => setTimeout(resolve, attempt * 2000));
+        }
     }
-});
+};
 
 const sendAppointmentEmail = async (appointment, doctor, userEmail) => {
-    console.log('Attempting to send email to:', userEmail); // Debug log
+    console.log('Attempting to send email to:', userEmail);
 
     try {
         const mailOptions = {
-            from: 'diagnoaiteam1@gmail.com',
+            from: '"DiagnoAI Team" <diagnoaiteam1@gmail.com>',
             to: userEmail,
             subject: `Appointment Confirmation - ${appointment.mode} Consultation`,
             html: `
@@ -66,14 +86,13 @@ const sendAppointmentEmail = async (appointment, doctor, userEmail) => {
             `
         };
 
-        console.log('Sending email with options:', mailOptions); // Debug log
-
-        const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent successfully:', info.messageId); // Debug log
+        console.log('Sending email to:', userEmail);
+        
+        const info = await sendWithRetry(mailOptions);
         return true;
 
     } catch (error) {
-        console.error('Email sending failed:', error);
+        console.error('Email sending failed after all retries:', error.message);
         return false;
     }
 };
